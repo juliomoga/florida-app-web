@@ -28,6 +28,12 @@
     }
     .hint { color: #9A9A95; font-size: 13px; margin-top: 20px; margin-bottom: 0; }
   </style>
+  <script>
+    // Supabase adjunta restos de sesión en el fragmento (#...) al redirigir.
+    // No viajan a ningún servidor, pero los borramos para que tampoco queden
+    // en la barra de direcciones ni en el historial del navegador.
+    if (location.hash) history.replaceState(null, '', location.pathname);
+  </script>
 </head>
 <body>
   <main class="card">
