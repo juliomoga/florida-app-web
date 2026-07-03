@@ -28,21 +28,31 @@
     }
     .hint { color: #9A9A95; font-size: 13px; margin-top: 20px; margin-bottom: 0; }
   </style>
-  <script>
-    // Supabase adjunta restos de sesión en el fragmento (#...) al redirigir.
-    // No viajan a ningún servidor, pero los borramos para que tampoco queden
-    // en la barra de direcciones ni en el historial del navegador.
-    if (location.hash) history.replaceState(null, '', location.pathname);
-  </script>
 </head>
 <body>
   <main class="card">
     <img class="logo" src="https://lqdfwhvlqsxuzxxsfudi.supabase.co/storage/v1/object/public/brand/logo-florida.png" alt="Ópticas Florida Inca">
     <div class="check">✓</div>
     <h1>¡Email confirmado!</h1>
-    <p>Tu cuenta ya está verificada. Vuelve a la app de Ópticas Florida Inca e inicia sesión para continuar con el alta.</p>
-    <a class="btn" href="opticasflorida://">Abrir la app</a>
+    <p>Tu cuenta ya está verificada. Te llevamos de vuelta a la app para continuar con el alta…</p>
+    <a class="btn" id="open-app" href="opticasflorida://">Abrir la app</a>
     <p class="hint">Si el botón no funciona, abre la app desde tu pantalla de inicio.</p>
   </main>
+  <script>
+    // Supabase adjunta la sesión en el fragmento (#access_token=...). El
+    // fragmento nunca viaja a ningún servidor. Lo reenviamos a la app por su
+    // esquema (opticasflorida://auth-callback#...) para que el paciente
+    // aterrice logueado, y lo borramos de la barra/historial del navegador.
+    (function () {
+      var h = location.hash;
+      if (h) history.replaceState(null, '', location.pathname);
+      if (h && h.indexOf('access_token') !== -1) {
+        var target = 'opticasflorida://auth-callback' + h;
+        var btn = document.getElementById('open-app');
+        if (btn) btn.href = target;
+        location.href = target; // intento automático; el botón queda de respaldo
+      }
+    })();
+  </script>
 </body>
 </html>
